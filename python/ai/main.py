@@ -87,11 +87,12 @@ class Car(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
 
 
+    def get_surround(self):
+        current = self.location
+
 
     def data(self):
-        input = [0, 0, 0, 0, 0]
-        for i, radar in enumerate(self.radars):
-            input[i] = int(radar[1])
+        input = [current, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25]
         return input
 
 
@@ -129,14 +130,6 @@ def eval_genomes(genomes, config):
         for i, car in enumerate(cars):
             ge[i].fitness += 1//(0.1*t)
             
-            if car.sprite.drivestate == True and car.sprite.reverse == False:
-                ge[i].fitness += 0
-            
-            if car.sprite.marker:
-                ge[i].fitness += 100
-                print(f"points given to {i}")
-            if not car.sprite.alive or t >= 10**3:
-                remove(i)
 
         for i, car in enumerate(cars):
             output = nets[i].activate(car.sprite.data())
