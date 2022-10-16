@@ -15,10 +15,15 @@ def main():
     p_value = field[:,1]
     gamma = field[:,2]
     
+    input("Voer opdracht A uit?")
     Opdracht_A()
+    input("Voer opdracht B uit?")
     Opdracht_B()
+    input("Voer opdracht C uit?")
     Opdracht_C()
+    input("Voer opdracht D uit?")
     Opdracht_D()
+    input("Voer opdracht E uit?")
     Opdracht_E()
 
 def optimum_finder(init):
