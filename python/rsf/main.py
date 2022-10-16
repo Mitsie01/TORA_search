@@ -2,9 +2,29 @@ import numpy as np
 import sys
 from colorama import Fore
 
+def main():
+    global Z, delta, loops, tspan
+    Z = 25
+    delta = 0.01
+    loops = 3
+    tspan = int(Z/delta)
+
+    global id, p_value, gamma
+    field = np.genfromtxt("field.csv", delimiter=",")
+    id = field[:,0]
+    p_value = field[:,1]
+    gamma = field[:,2]
+    
+    Opdracht_A()
+    Opdracht_B()
+    Opdracht_C()
+    Opdracht_D()
+    Opdracht_E()
+
 def optimum_finder(init):
     total_max = 0
     cycle_max = 0
+    iterations = 3000
     init_score = np.sum(p_value*(1-np.exp(-gamma*(init*delta))))
     print(f'Initial score: {init_score}')
 
@@ -44,35 +64,40 @@ Final array:
             init[cycle_pos_plus] = init[cycle_pos_plus]+1
     return total_max, init
 
-##################################################################################################
+def Opdracht_A():
+  init = np.array([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
+  print(f'''
+-----------------------------------------------
+[STARTING] 
 
-# Calculation variables
-Z = 25
-delta = 0.01
-iterations = 3000
-loops = 3
+Array:
 
-tspan = int(Z/delta)
-highest_max = 0
-
-field = np.genfromtxt("field.csv", delimiter=",")
-
-id = field[:,0]
-p_value = field[:,1]
-gamma = field[:,2]
+{init}
+''')
+  optimum_finder(init)
 
 
+def Opdracht_B():
+    pass
 
-for i in range(loops):
+def Opdracht_C():
+    pass
 
-    p = np.full(
-    shape=Z,
-    fill_value=1/Z,
-    dtype=np.float_
-    )
-    init = np.random.multinomial(int(Z/delta), p, 1).flatten()
+def Opdracht_D():
+    pass
 
-    print(f'''
+def Opdracht_E():
+    highest_max = 0
+    for i in range(loops):
+
+        p = np.full(
+        shape=Z,
+        fill_value=1/Z,
+        dtype=np.float_
+        )
+        init = np.random.multinomial(int(Z/delta), p, 1).flatten()
+
+        print(f'''
 -------------------------------------------------------------''' + Fore.GREEN + '''
 [STARTING]''' + Fore.RESET + f''' Cycle {i+1}/{loops}'''
 
@@ -81,19 +106,24 @@ for i in range(loops):
 
 {init}
 ''')
-    total_max, init = optimum_finder(init)
+        total_max, init = optimum_finder(init)
 
-    if total_max > highest_max:
-        highest_max = total_max
-        highest_array = init
-        print(f'''
+        if total_max > highest_max:
+            highest_max = total_max
+            highest_array = init
+            print(f'''
 New maximum found: {total_max}''')
 
-print(f'''
+    print(f'''
 =================================================
 
 Final maximum score: {total_max}''')
-print(f'''
+    print(f'''
 Final array:
 
 {init}''')
+
+if __name__ == "__main__":
+    main()
+
+
