@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+from colorama import Fore
 
 def optimum_finder(init):
     total_max = 0
@@ -7,8 +8,11 @@ def optimum_finder(init):
     init_score = np.sum(p_value*(1-np.exp(-gamma*(init*delta))))
     print(f'Initial score: {init_score}')
 
+    print(Fore.GREEN + f'''
+[STARTING]''' + Fore.RESET + f" Starting iteration process of max {iterations} iterations.")
+
     for cycle in range(iterations):   
-        print(f'[ITERATING] {int((cycle/iterations)*100)}%', end='\r')
+        print(Fore.CYAN + f'[ITERATING]' + Fore.RESET + f'{int((cycle/iterations)*100)}%', end='\r')
         sys.stdout.write("\033[K")
         for pos_min in range(init.size):
             if init[pos_min] > 0:
@@ -26,7 +30,7 @@ def optimum_finder(init):
                 init[pos_min] = init[pos_min]+1
 
         if total_max >= cycle_max:
-            print(f"[BREAKING] Optimum reached after {cycle} iterations")
+            print(Fore.RED + f"[BREAKING]" + Fore.RESET + f" Optimum reached after {cycle} iterations")
             print(f'''
 Final score: {total_max}''')
             print(f'''
@@ -39,6 +43,10 @@ Final array:
             init[cycle_pos_min] = init[cycle_pos_min]-1
             init[cycle_pos_plus] = init[cycle_pos_plus]+1
     return total_max, init
+
+##################################################################################################
+
+# Calculation variables
 Z = 25
 delta = 0.01
 iterations = 3000
@@ -65,10 +73,11 @@ for i in range(loops):
     init = np.random.multinomial(int(Z/delta), p, 1).flatten()
 
     print(f'''
------------------------------------------------
-[STARTING] cycle {i+1}/{loops}
+-------------------------------------------------------------''' + Fore.GREEN + '''
+[STARTING]''' + Fore.RESET + f''' Cycle {i+1}/{loops}'''
 
-[GENERATING] generated new array:
++ Fore.CYAN +'''
+[GENERATING]''' + Fore.RESET + f'''generated new random array:
 
 {init}
 ''')
@@ -88,8 +97,3 @@ print(f'''
 Final array:
 
 {init}''')
-
-
-#init = np.array([50, 20, 20, 75, 125, 50, 100, 150, 125, 250, 125, 250, 100, 125, 175, 50, 125, 50, 50, 25, 50, 100, 100, 100, 110])
-#init = np.array([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
-
