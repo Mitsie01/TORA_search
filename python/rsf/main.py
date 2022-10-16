@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 Z = 25
 delta = 0.01
@@ -23,7 +24,7 @@ for i in range(loops):
     fill_value=1/Z,
     dtype=np.float_
     )
-    init = np.random.multinomial(2500, p, 1).flatten()
+    init = np.random.multinomial(int(Z/delta), p, 1).flatten()
 
     print(f'''
 -----------------------------------------------
@@ -46,6 +47,8 @@ for i in range(loops):
     print(f'Initial score: {init_score}')
 
     for cycle in range(iterations):   
+        print(f'[ITERATING] {int((cycle/iterations)*100)}%', end='\r')
+        sys.stdout.write("\033[K")
         for pos_min in range(init.size):
             if init[pos_min] > 0:
                 init[pos_min] = init[pos_min]-1
