@@ -3,10 +3,9 @@ import sys
 from colorama import Fore
 
 def main():
-    global Z, delta, loops
+    global Z, delta
     Z = 25
     delta = 0.01
-    loops = 3
 
     global id, p_value, gamma
     field = np.genfromtxt("field.csv", delimiter=",")
@@ -18,8 +17,6 @@ def main():
     Opdracht_A()
     input("Voer opdracht B uit?")
     Opdracht_B()
-    input("Voer opdracht C uit?")
-    Opdracht_C()
     input("Voer opdracht D uit?")
     Opdracht_D(Z)
     input("Voer opdracht E uit?")
@@ -55,12 +52,15 @@ def optimum_finder(init, delta):
 
         if total_max >= cycle_max:
             print(Fore.RED + f"[BREAKING]" + Fore.RESET + f" Optimum reached after {cycle} iterations")
-            print(f'''
-Final score: {total_max}''')
-            print(f'''
+            try:    
+                print(f'''
 Final array:
 
-{init}''')
+{init.reshape(5,5)}''')
+                print(f'''
+Final score: {total_max}''')
+            except:
+                pass
             break
         else:
             total_max = cycle_max
@@ -76,7 +76,7 @@ def array_generator(Z, delta):
     random_array = np.random.multinomial(int(Z/delta), p, 1).flatten()
     print(f'''{Fore.GREEN}[FINISHED]{Fore.RESET} Random array generated:
 
-{random_array}
+{random_array.reshape(5,5)}
 ''')
     return random_array
 
@@ -87,17 +87,40 @@ def Opdracht_A():
 -------------------------------------------------------------''' + Fore.GREEN + '''
 [STARTING]''' + Fore.RESET + f'''
 
-{init}
+{init.reshape(5,5)}
 ''')
     optimum_p, optimum_array = optimum_finder(init, delta)
     return optimum_p, optimum_array
 
 
 def Opdracht_B():
-    pass
+    global p_value, gamma
+    p_0 = p_value
+    gamma_0 = gamma
+    
+    init = np.array([625,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1875])
+    init_left = init.reshape(5,5)[:, np.r_[0:4]].reshape(20)
+    init_right = init.reshape(5,5)[:, 4]
+    
+    p_value = p_0.reshape(5,5)[:, 4]
+    gamma = gamma_0.reshape(5,5)[:, 4]
+    total_right, init_right = optimum_finder(init_right, delta)
+    
+    p_value = p_0.reshape(5,5)[:, np.r_[0:4]].reshape(20)
+    gamma = gamma_0.reshape(5,5)[:, np.r_[0:4]].reshape(20)
+    total_left, init_left = optimum_finder(init_left, delta)
 
-def Opdracht_C():
-    pass
+    init.reshape(5,5)[:, 4] = init_right
+    init.reshape(5,5)[:, np.r_[0:4]] = init_left.reshape(5,4)
+    total_max = total_left + total_right
+    print(f'''
+Final array:
+
+{init.reshape(5,5)}''')
+    print(f'''
+Final score: {total_max}''')
+    p_value = p_0
+    gamma = gamma_0
 
 def Opdracht_D(Z):
     # for 3 different delta values: 0.1, 0.06, 0.02
@@ -124,6 +147,7 @@ Difference between delta values: {(np.max(p_values)-np.min(p_values))/((np.max(p
 
 def Opdracht_E():
     highest_max = 0
+    loops = 3
     for i in range(loops):
         print(f'''
 -------------------------------------------------------------{Fore.GREEN}
@@ -146,7 +170,7 @@ Final maximum score: {total_max}''')
     print(f'''
 Final array:
 
-{highest_array}''')
+{highest_array.reshape(5,5)}''')
 
 if __name__ == "__main__":
     main()
