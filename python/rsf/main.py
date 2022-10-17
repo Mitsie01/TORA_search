@@ -72,10 +72,8 @@ Final array:
 def Opdracht_A():
   init = np.array([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
   print(f'''
------------------------------------------------
-[STARTING] 
-
-Array:
+-------------------------------------------------------------''' + Fore.GREEN + '''
+[STARTING]''' + Fore.RESET + f'''
 
 {init}
 ''')
@@ -126,7 +124,7 @@ Final maximum score: {total_max}''')
     print(f'''
 Final array:
 
-{init}''')
+{highest_array}''')
 
 if __name__ == "__main__":
     main()
