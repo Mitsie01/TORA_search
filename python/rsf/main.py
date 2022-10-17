@@ -3,11 +3,10 @@ import sys
 from colorama import Fore
 
 def main():
-    global Z, delta, loops, tspan
+    global Z, delta, loops
     Z = 25
     delta = 0.01
     loops = 3
-    tspan = int(Z/delta)
 
     global id, p_value, gamma
     field = np.genfromtxt("field.csv", delimiter=",")
@@ -22,11 +21,11 @@ def main():
     input("Voer opdracht C uit?")
     Opdracht_C()
     input("Voer opdracht D uit?")
-    Opdracht_D()
+    Opdracht_D(Z)
     input("Voer opdracht E uit?")
     Opdracht_E()
 
-def optimum_finder(init):
+def optimum_finder(init, delta):
     total_max = 0
     cycle_max = 0
     iterations = 3000
@@ -69,9 +68,22 @@ Final array:
             init[cycle_pos_plus] = init[cycle_pos_plus]+1
     return total_max, init
 
+
+def array_generator(Z, delta):
+    print(f'''
+{Fore.CYAN}[GENERATING]{Fore.RESET} Generating random array.''')
+    p = np.full(shape=Z,fill_value=1/Z,dtype=np.float_)
+    random_array = np.random.multinomial(int(Z/delta), p, 1).flatten()
+    print(f'''{Fore.GREEN}[FINISHED]{Fore.RESET} Random array generated:
+
+{random_array}
+''')
+    return random_array
+
+
 def Opdracht_A():
-  init = np.array([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
-  print(f'''
+    init = np.array([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100])
+    print(f'''
 -----------------------------------------------
 [STARTING] 
 
@@ -79,7 +91,8 @@ Array:
 
 {init}
 ''')
-  optimum_finder(init)
+    optimum_p, optimum_array = optimum_finder(init, delta)
+    return optimum_p, optimum_array
 
 
 def Opdracht_B():
@@ -88,30 +101,39 @@ def Opdracht_B():
 def Opdracht_C():
     pass
 
-def Opdracht_D():
-    pass
+def Opdracht_D(Z):
+    # for 3 different delta values: 0.1, 0.06, 0.02
+    delta = 0.1
+    p_values = []
+    for i in range(3):
+        delta = 0.1
+        array = array_generator(Z, delta)
+        max, array = optimum_finder(array, delta)
+        p_values.append(float(max))
+        delta -= 0.4
+        print(p_values)
+    print(f'''
+==============================================================
+Probability scores:
+
+delta = 0.1: {p_values[0]}
+delta = 0.06: {p_values[1]}
+delta = 0.02: {p_values[2]}
+
+Difference between delta values: {(np.max(p_values)-np.min(p_values))/((np.max(p_values)+np.min(p_values))/2)*100} %
+''')
+
 
 def Opdracht_E():
     highest_max = 0
     for i in range(loops):
-
-        p = np.full(
-        shape=Z,
-        fill_value=1/Z,
-        dtype=np.float_
-        )
-        init = np.random.multinomial(int(Z/delta), p, 1).flatten()
-
         print(f'''
--------------------------------------------------------------''' + Fore.GREEN + '''
-[STARTING]''' + Fore.RESET + f''' Cycle {i+1}/{loops}'''
+-------------------------------------------------------------{Fore.GREEN}
+[STARTING]{Fore.RESET} Cycle {i+1}/{loops}''')
 
-+ Fore.CYAN +'''
-[GENERATING]''' + Fore.RESET + f'''generated new random array:
+        init = array_generator(Z, delta)
 
-{init}
-''')
-        total_max, init = optimum_finder(init)
+        total_max, init = optimum_finder(init, delta)
 
         if total_max > highest_max:
             highest_max = total_max
